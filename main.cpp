@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "itkTypes.h"
+#include "misc.h"
 
 // #define LOG_FORMATS
 
@@ -37,8 +38,11 @@ std::ostream& operator<<(std::ostream& str, const GLFWvidmode& vidmode)
 
 int main(void)
 {
-	Teste::Pointer t = Teste::New();
-
+	std::string imagePath = GetExecutablePath();
+	ImageLoaderType::Pointer imageLoader = ImageLoaderType::New();
+	imageLoader->SetFileName(imagePath+"teste_loader.png");
+	imageLoader->Update();
+	ImageType::Pointer originalImage = imageLoader->GetOutput();
 
 	GLFWwindow* window;
 

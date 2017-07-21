@@ -1,4 +1,5 @@
 #pragma once
 #include <itkImage.h>
-
-typedef itk::Image<short, 3> Teste;
+#include "myImageLoader.h"
+typedef itk::Image<float, 2> ImageType;
+typedef itk::myImageLoader<ImageType> ImageLoaderType;
