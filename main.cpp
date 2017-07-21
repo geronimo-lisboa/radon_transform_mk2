@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <Windows.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 

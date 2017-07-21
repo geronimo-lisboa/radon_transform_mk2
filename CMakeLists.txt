@@ -22,6 +22,10 @@ target_link_libraries(radon-transform-mk2 ${OPENGL_LIBRARIES})
 include_directories(C:/lib/glew-2.0.0/include)
 target_link_libraries(radon-transform-mk2 C:/lib/glew-2.0.0/lib/Release/x64/glew32.lib)
 
+#Adds GLFW
+include_directories(C:/lib/glfw/include)
+target_link_libraries(radon-transform-mk2 debug C:/lib/glfw_build/src/Debug/glfw3.lib)
+target_link_libraries(radon-transform-mk2 optimized C:/lib/glfw_build/src/Release/glfw3.lib)
 
 
 #suprime o warning chato dos infernos que a ITK gera por usar funções inseguras da api do windows
