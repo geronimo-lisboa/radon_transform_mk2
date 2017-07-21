@@ -1,4 +1,4 @@
-#pragma onde
+#pragma once
 #include <Windows.h>
 #include <string>
 #include <sstream>
@@ -83,7 +83,7 @@ static inline std::string GetExecutablePath()
 	std::string str(path);
 	std::vector<std::string> splitted = SplitString(str, "\\\\");
 	std::stringstream ss;
-	for (int i = 0; i < splitted.size() - 1; i++)
+	for (size_t i = 0; i < splitted.size() - 1; i++)
 	{
 		ss << splitted[i] << "\\";
 	}

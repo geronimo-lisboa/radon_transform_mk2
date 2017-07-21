@@ -6,6 +6,7 @@
 #include "itkTypes.h"
 #include "misc.h"
 
+#include <itkImageFileWriter.h>
 // #define LOG_FORMATS
 
 static void error_callback(int error, const char* description)
@@ -40,7 +41,7 @@ int main(void)
 {
 	std::string imagePath = GetExecutablePath();
 	ImageLoaderType::Pointer imageLoader = ImageLoaderType::New();
-	imageLoader->SetFileName(imagePath+"teste_loader.png");
+	imageLoader->SetFileName(imagePath + "phantom.png");
 	imageLoader->Update();
 	ImageType::Pointer originalImage = imageLoader->GetOutput();
 

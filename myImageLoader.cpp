@@ -7,6 +7,8 @@
 #include "itkImageRegionConstIterator.h"
 #include <itkImageFileReader.h>
 #include <itkImage.h>
+#include <itkRGBAPixel.h>
+#include <itkRGBToLuminanceImageFilter.h>
 namespace itk
 {
 	template< class TImage>
@@ -14,46 +16,41 @@ namespace itk
 	{
 		if (m_FileName == "") throw itk::ExceptionObject("Must inform the filename");
 		//Carga do arquivo
-		typedef itk::Image<FixedArray<unsigned char, 4>, 2> LoadedImageType;
-		typedef itk::ImageFileReader<LoadedImageType> ReaderType;
+		typedef unsigned char                           ComponentType;
+		typedef itk::RGBPixel< ComponentType >          InputPixelType;
+		typedef itk::Image< InputPixelType, 2 > InputImageType;
+		typedef itk::ImageFileReader< InputImageType >  ReaderType;
 		ReaderType::Pointer reader = ReaderType::New();
 		reader->SetFileName(m_FileName.c_str());
-		reader->Update();
-		LoadedImageType::Pointer loadedMultichannelImage = reader->GetOutput();
-		//Conversão pra 1 canal
 
+		typedef itk::RGBToLuminanceImageFilter< InputImageType, typename TImage > RGBToLuminanceType;
+		RGBToLuminanceType::Pointer filter = RGBToLuminanceType::New();
+		filter->SetInput(reader->GetOutput());
+		filter->Update();
 
-		//typename TOutputImage::Pointer output = this->GetOutput();
-		//typename TOutputImage::RegionType region;
-		//typename TOutputImage::IndexType start;
-		//start[0] = 0;
-		//start[1] = 0;
-
-		//typename TOutputImage::SizeType size;
-		//size[0] = 200;
-		//size[1] = 300;
-
-		//region.SetSize(size);
-		//region.SetIndex(start);
-
-		//output->SetRegions(region);
-		//output->Allocate();
-
-		//itk::ImageRegionIterator<TOutputImage> imageIterator(output, output->GetLargestPossibleRegion());
-
-		//while (!imageIterator.IsAtEnd())
-		//{
-		//	if (imageIterator.GetIndex()[0] == imageIterator.GetIndex()[1])
-		//	{
-		//		imageIterator.Set(255);
-		//	}
-		//	else
-		//	{
-		//		imageIterator.Set(0);
-		//	}
-
-		//	++imageIterator;
-		//}
+		typename TImage::Pointer output = this->GetOutput();
+		typename TImage::RegionType region;
+		typename TImage::IndexType start;
+		start[0] = 0;
+		start[1] = 0;
+		if (output->ImageDimension == 3)start[1] = 0;
+		typename TImage::SizeType size;
+		size[0] = filter->GetOutput()->GetLargestPossibleRegion().GetSize()[0];
+		size[1] = filter->GetOutput()->GetLargestPossibleRegion().GetSize()[1];
+		if (output->ImageDimension==3)
+			size[2] = filter->GetOutput()->GetLargestPossibleRegion().GetSize()[2];
+		region.SetSize(size);
+		region.SetIndex(start);
+		output->SetRegions(region);
+		output->Allocate();
+		itk::ImageRegionIterator<TImage> outputIterator(output, output->GetLargestPossibleRegion());
+		itk::ImageRegionIterator<TImage> inputIterator(filter->GetOutput(), filter->GetOutput()->GetLargestPossibleRegion());
+		while (!outputIterator.IsAtEnd())
+		{
+			outputIterator.Set(inputIterator.Get());
+			++inputIterator;
+			++outputIterator;
+		}
 	}
 
 }// end namespace
