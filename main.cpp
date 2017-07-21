@@ -1,6 +1,8 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+//#include <GL/glew.h>
+//#include <GLFW/glfw3.h>
 #include <iostream>
+
+#include "itkTypes.h"
 
 // #define LOG_FORMATS
 
@@ -34,6 +36,9 @@ std::ostream& operator<<(std::ostream& str, const GLFWvidmode& vidmode)
 
 int main(void)
 {
+	Teste::Pointer t = Teste::New();
+
+
 	GLFWwindow* window;
 
 	glfwSetErrorCallback(error_callback);
