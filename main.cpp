@@ -6,8 +6,10 @@
 #include "misc.h"
 #include <memory>
 #include <vector>
-////Cria um buffer.
-
+#include "myShader.h"
+#include "shaderUtils.h"
+#include <map>
+const std::string imagePath = GetExecutablePath();
 
 class myResources
 {
@@ -16,7 +18,7 @@ private:
 	GLuint texture;
 	std::vector<GLfloat> vertexBufferData;
 	std::vector<GLushort> elementBufferData;
-
+	MyShader shader;
 public:
 	static GLuint makeBuffer(GLenum target, const void *bufferData, GLsizei bufferSize)
 	{
@@ -69,12 +71,14 @@ public:
 		vertexBuffer = makeBuffer(GL_ARRAY_BUFFER, vertexBufferData.data(), vertexBufferData.size()*sizeof(GLfloat));
 		elementBuffer = makeBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferData.data(), elementBufferData.size()*sizeof(GLushort));
 		texture = makeTexture(imagemDaItk);
+
+		shader = CreateShaderProgram(imagePath + "vertexShader.glsl", imagePath + "fragmentShader.glsl");
 	}
 };
 
 int main(void)
 {
-	std::string imagePath = GetExecutablePath();
+	
 	ImageLoaderType::Pointer imageLoader = ImageLoaderType::New();
 	imageLoader->SetFileName(imagePath + "phantom.png");
 	imageLoader->Update();
