@@ -9,6 +9,7 @@
 #include <itkImage.h>
 #include <itkRGBAPixel.h>
 #include <itkRGBToLuminanceImageFilter.h>
+#include <itkIntensityWindowingImageFilter.h>
 namespace itk
 {
 	template< class TImage>
@@ -28,6 +29,15 @@ namespace itk
 		filter->SetInput(reader->GetOutput());
 		filter->Update();
 
+		typedef itk::IntensityWindowingImageFilter<typename TImage, typename TImage> IntensityFilter;
+		IntensityFilter::Pointer normalizer = IntensityFilter::New();
+		normalizer->SetInput(filter->GetOutput());
+		normalizer->SetWindowMinimum(0);
+		normalizer->SetWindowMaximum(255.0);
+		normalizer->SetOutputMinimum(0);
+		normalizer->SetOutputMaximum(1.0);
+		normalizer->Update();
+
 		typename TImage::Pointer output = this->GetOutput();
 		typename TImage::RegionType region;
 		typename TImage::IndexType start;
@@ -44,7 +54,7 @@ namespace itk
 		output->SetRegions(region);
 		output->Allocate();
 		itk::ImageRegionIterator<TImage> outputIterator(output, output->GetLargestPossibleRegion());
-		itk::ImageRegionIterator<TImage> inputIterator(filter->GetOutput(), filter->GetOutput()->GetLargestPossibleRegion());
+		itk::ImageRegionIterator<TImage> inputIterator(normalizer->GetOutput(), normalizer->GetOutput()->GetLargestPossibleRegion());
 		while (!outputIterator.IsAtEnd())
 		{
 			outputIterator.Set(inputIterator.Get());
