@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
@@ -52,7 +53,9 @@ int main(void)
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-
+	// start GLEW extension handler
+	glewExperimental = GL_TRUE;
+	glewInit();
 #ifdef LOG_FORMATS
 
 	int count;
