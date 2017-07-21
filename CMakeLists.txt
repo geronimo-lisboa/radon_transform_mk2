@@ -15,6 +15,13 @@ file(GLOB my_source_files "*.h" "*.cpp" "*.cxx")
 add_executable(radon-transform-mk2 ${my_source_files} )  
 #bota vtk e ITK
 target_link_libraries(radon-transform-mk2   ${ITK_LIBRARIES})
+#Adds OpenGL
+find_package(OpenGL)
+target_link_libraries(radon-transform-mk2 ${OPENGL_LIBRARIES})
+#Adds GLEW
+include_directories(C:/lib/glew-2.0.0/include)
+target_link_libraries(radon-transform-mk2 C:/lib/glew-2.0.0/lib/Release/x64/glew32.lib)
+
 
 
 #suprime o warning chato dos infernos que a ITK gera por usar funções inseguras da api do windows
