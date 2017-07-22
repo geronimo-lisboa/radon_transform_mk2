@@ -66,6 +66,7 @@ public:
 		elementBufferData.push_back(1);
 		elementBufferData.push_back(2);
 		elementBufferData.push_back(3);
+		std::cout<<vertexBufferData.data()[0];
 
 		vertexBuffer = makeBuffer(GL_ARRAY_BUFFER, vertexBufferData.data(), vertexBufferData.size()*sizeof(GLfloat));
 		elementBuffer = makeBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferData.data(), elementBufferData.size()*sizeof(GLushort));
@@ -78,7 +79,6 @@ public:
 
 int main(void)
 {
-	
 	ImageLoaderType::Pointer imageLoader = ImageLoaderType::New();
 	imageLoader->SetFileName(imagePath + "phantom.png");
 	imageLoader->Update();
@@ -94,8 +94,8 @@ int main(void)
 	{
 		exit(EXIT_FAILURE);
 	}
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	window = glfwCreateWindow(1280, 720, "Hello GLFW", NULL, NULL);//A criação da janela é aqui
 	std::shared_ptr<myResources> resource = nullptr;
 	if (!window)
@@ -104,9 +104,7 @@ int main(void)
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-	// start GLEW extension handler
-	glewExperimental = GL_TRUE;
-	glewInit();
+
 	//Seta o callback de tecla;
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
@@ -122,19 +120,32 @@ int main(void)
 	{
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
-
 		glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT);
 		std::shared_ptr<myResources> myObject = nullptr;//std::make_shared<myResources>();
 		if (!isInitialized)
 		{
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+			// start GLEW extension handler
+			glewExperimental = GL_TRUE;
+			GLenum err = glewInit();
+			if (GLEW_OK != err)
+			{
+				/* Problem: glewInit failed, something is seriously wrong. */
+				printf("Error: %s\n", glewGetErrorString(err));
+			}
+
 			myObject = std::make_shared<myResources>();
 			myObject->Init(originalImage);
 			isInitialized = true;
 		}
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		else
+		{
+			//...
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}
 	}
 	//Fim do loop principal
 	//Limpa tudo e morre.
