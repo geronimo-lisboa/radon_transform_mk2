@@ -1,6 +1,6 @@
 #ifndef __shader_h
 #define __shader_h
-#include <glew.h>
+#include <gl/glew.h>
 #ifdef WIN32
 #include <gl/gl.h>
 #else

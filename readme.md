@@ -17,3 +17,7 @@ http://www.dspguide.com/ch25/5.htm Informações importantes sobre aquisição e rec
 http://christian.mendl.net/software/radon_gpu_manuscript.pdf O artigo no qual me baseio.
 http://www.cs.cmu.edu/~galeotti/methods_course/ITK_Filters2.pdf Sobre filtro, pro futuro.
 http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-2.1:-Buffers-and-Textures.html - Tutorial de opengl moderno.
+
+Observações:
+
+1) Por copyAssets.bat nos eventos de build (ex: C:\programacao\radon_transform_mk2\copyAssets.bat)

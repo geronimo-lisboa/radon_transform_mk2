@@ -6,7 +6,6 @@
 #include "misc.h"
 #include <memory>
 #include <vector>
-#include "myShader.h"
 #include "shaderUtils.h"
 #include <map>
 const std::string imagePath = GetExecutablePath();
@@ -33,7 +32,7 @@ public:
 	{
 		//TODO : O dado vem de uma imagem da ITK, com um float por pixel
 		GLuint texture;
-		int width, height;
+
 		void *pixels = imagemDaITK->GetBufferPointer();
 		if (!pixels)
 			return 0;
@@ -70,9 +69,10 @@ public:
 
 		vertexBuffer = makeBuffer(GL_ARRAY_BUFFER, vertexBufferData.data(), vertexBufferData.size()*sizeof(GLfloat));
 		elementBuffer = makeBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferData.data(), elementBufferData.size()*sizeof(GLushort));
-		texture = makeTexture(imagemDaItk);
+		texture = makeTexture(imagemDaITK);
 
 		shader = CreateShaderProgram(imagePath + "vertexShader.glsl", imagePath + "fragmentShader.glsl");
+		std::cout << endl;
 	}
 };
 
@@ -97,23 +97,9 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	window = glfwCreateWindow(1280, 720, "Hello GLFW", NULL, NULL);//A criação da janela é aqui
-	bool isInitialized = false;
 	std::shared_ptr<myResources> resource = nullptr;
 	if (!window)
 	{
-		if (!isInitialized)
-		{
-			static const GLfloat g_vertex_buffer_data[] = {
-				-1.0f, -1.0f,
-				1.0f, -1.0f,
-				-1.0f, 1.0f,
-				1.0f, 1.0f
-			};
-			static const GLushort g_element_buffer_data[] = { 0, 1, 2, 3 };
-			resource = std::make_shared<myResources>();
-
-			isInitialized = true;
-		}
 		//Se falhou em criar a janela, morre.
 		glfwTerminate();
 		exit(EXIT_FAILURE);
