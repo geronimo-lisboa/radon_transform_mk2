@@ -3,6 +3,7 @@
 2)Carga do Shepp-Logan phantom e sua conversão para 1 canal - Iniciado 21/07/2017, Terminado 21/07/2017
 
 3)Criação da geometria na GPU e carga do phantom na GPU, com exibição na tela. - Iniciado 21/07/2017
+22/07/2017 apareceu na GPU.
 
 4)Render-To-Texture, para ver como é, com retorno da textura para a CPU.
 
@@ -21,3 +22,4 @@ http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-2.1:-Buffers-an
 Observações:
 
 1) Por copyAssets.bat nos eventos de build (ex: C:\programacao\radon_transform_mk2\copyAssets.bat)
+2) Por enquanto uso AMD CodeXL (previously: gRemedy, gDEBugger) para depurar.
