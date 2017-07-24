@@ -187,12 +187,12 @@ Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfi
 	glBindVertexArray(vao);
 
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
 	glBindBuffer(GL_ARRAY_BUFFER, vertexesVbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 }
 
