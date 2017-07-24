@@ -111,6 +111,10 @@ GLuint Shader::MakeProgram(GLuint vertex_shader, GLuint fragment_shader)
 	GLuint program = glCreateProgram();
 	glAttachShader(program, vertex_shader);
 	glAttachShader(program, fragment_shader);
+	//TODO Depois penso como parametrizar isso aqui
+	glBindAttribLocation(program, 0, "vp");
+	glBindAttribLocation(program, 1, "vc");
+
 	glLinkProgram(program);
 	glGetProgramiv(program, GL_LINK_STATUS, &program_ok);
 	if (!program_ok) {
@@ -163,16 +167,33 @@ Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfi
 	vertexes.push_back(-1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(0.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
-	vbo = 0;//Cria o buffer e passa os dados pra ele.
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	colors.push_back(0.0f); colors.push_back(0.0f); colors.push_back(0.0f);
+	colors.push_back(1.0f); colors.push_back(0.0f); colors.push_back(0.0f);
+	colors.push_back(1.0f); colors.push_back(1.0f); colors.push_back(0.0f);
+
+	vertexesVbo = 0;//Cria o buffer dos vertices e passa os dados pra ele.
+	glGenBuffers(1, &vertexesVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexesVbo);
 	glBufferData(GL_ARRAY_BUFFER, vertexes.size() * sizeof(float), vertexes.data(), GL_STATIC_DRAW);
+
+	colorsVbo = 0;
+	glGenBuffers(1, &colorsVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
+	glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
+
 	vao = 0;//Cria o vertex array object e liga o buffer a ele
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
+
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexesVbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
 }
 
 void Object3d::Render()
