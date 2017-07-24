@@ -164,13 +164,22 @@ void Shader::UseProgram()
 
 Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfile)
 {
+	//vertices triangulo 1
 	vertexes.push_back(-1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
-	vertexes.push_back(0.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
-
-	colors.push_back(0.0f); colors.push_back(0.0f); colors.push_back(0.0f);
+	vertexes.push_back(-1.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
+	//vertices triangulo 2
+	vertexes.push_back(-1.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
+	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
+	vertexes.push_back(1.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
+	//cores triangulo 1
 	colors.push_back(1.0f); colors.push_back(0.0f); colors.push_back(0.0f);
-	colors.push_back(1.0f); colors.push_back(1.0f); colors.push_back(0.0f);
+	colors.push_back(1.0f); colors.push_back(0.0f); colors.push_back(0.0f);
+	colors.push_back(1.0f); colors.push_back(0.0f); colors.push_back(0.0f);
+	//cores triangulo 2
+	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
+	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
+	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
 
 	vertexesVbo = 0;//Cria o buffer dos vertices e passa os dados pra ele.
 	glGenBuffers(1, &vertexesVbo);
@@ -203,3 +212,4 @@ void Object3d::Render()
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	teste_opengl();
 }
+
