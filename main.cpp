@@ -82,7 +82,6 @@ int main(int argc, char** argv)
 			glfwSwapBuffers(window);
 
 		}
-
 		//4) Fim do loop principal
 		//Limpa tudo e morre.
 		glfwDestroyWindow(window);

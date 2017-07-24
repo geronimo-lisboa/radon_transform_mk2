@@ -111,10 +111,6 @@ GLuint Shader::MakeProgram(GLuint vertex_shader, GLuint fragment_shader)
 	GLuint program = glCreateProgram();
 	glAttachShader(program, vertex_shader);
 	glAttachShader(program, fragment_shader);
-	//TODO Depois penso como parametrizar isso aqui
-	glBindAttribLocation(program, 0, "vp");
-	glBindAttribLocation(program, 1, "vc");
-
 	glLinkProgram(program);
 	glGetProgramiv(program, GL_LINK_STATUS, &program_ok);
 	if (!program_ok) {
@@ -195,13 +191,17 @@ Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfi
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	shader.UseProgram();
+	GLuint vpLocation = shader.GetAttribute("vp");
+	GLuint vcLocation = shader.GetAttribute("vc");
+	glEnableVertexAttribArray(vpLocation);
+	glEnableVertexAttribArray(vcLocation);
+	glUseProgram(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexesVbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(vpLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(vcLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 }
 
@@ -209,6 +209,11 @@ void Object3d::Render()
 {
 	shader.UseProgram();
 	glBindVertexArray(vao);
+	GLuint vpLocation = shader.GetAttribute("vp");
+	GLuint vcLocation = shader.GetAttribute("vc");
+	//TODO Depois penso como parametrizar isso aqui
+	glBindAttribLocation(shader.GetProgramId(), vpLocation, "vp");
+	glBindAttribLocation(shader.GetProgramId(), vcLocation, "vc");
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	teste_opengl();
 }
