@@ -34,6 +34,7 @@ public:
 class Object3d
 {
 private:
+	GLuint vao;
 	GLuint vertexbuffer;
 	vector<GLfloat> vertexes;
 	Shader shader;

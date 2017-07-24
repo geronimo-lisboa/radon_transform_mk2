@@ -148,9 +148,20 @@ Object3d::Object3d() :shader("C:\\programacao\\radon_transform_mk2_build\\Debug\
 	vertexes.push_back(-1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(0.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
+	size_t sz = vertexes.size();
+	std::cout << sz << std::endl;
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexes.size()*sizeof(float)), vertexes.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertexes.size()*sizeof(float), vertexes.data(), GL_STATIC_DRAW);
+
+	GLint size = 0;
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); 
+	std::cout << "Buffer na gpu = " << size << std::endl;
 }
 
 void teste_opengl()
@@ -167,12 +178,14 @@ void Object3d::Render()
 	teste_opengl();
 	shader.UseProgram();
 	teste_opengl();
-	glEnableVertexAttribArray(shader.GetAttribute("vertex"));
+	//glBindVertexArray(vao);
 	teste_opengl();
-	glBindBuffer(GL_ARRAY_BUFFER, shader.GetAttribute("vertex"));
+	glEnableVertexAttribArray(0);
+	teste_opengl();
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	teste_opengl();
 	glVertexAttribPointer(
-		shader.GetAttribute("vertex"),                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 		3,                  // size
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?
