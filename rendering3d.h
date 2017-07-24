@@ -35,10 +35,10 @@ class Object3d
 {
 private:
 	GLuint vao;
-	GLuint vertexbuffer;
+	GLuint vbo;
 	vector<GLfloat> vertexes;
 	Shader shader;
 public:
-	Object3d() ;
+	Object3d(std::string vsfile, std::string fsfile) ;
 	void Render();
 };

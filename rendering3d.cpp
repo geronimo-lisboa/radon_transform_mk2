@@ -2,7 +2,21 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <sstream>
+#include <exception>
 using namespace std;
+
+void teste_opengl()
+{
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR)
+	{
+		std::stringstream ss;
+		ss << "erro de opengl " << err;
+		throw std::exception(ss.str().c_str());
+	}
+}
+
 std::string Shader::ReadShaderFile(std::string path)
 {
 	std::string VertexShaderCode;
@@ -79,9 +93,11 @@ GLuint Shader::MakeShader(GLenum type, std::string source)
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &shader_ok);
 	if (!shader_ok)
 	{
+		stringstream ss;
 		string _probl = GetShaderInfoLog(shader, glGetShaderiv, glGetShaderInfoLog);
+		ss << "Erro em " << __FUNCTION__ << " : " << _probl;
 		glDeleteShader(shader);
-		throw std::runtime_error(_probl.c_str());
+		throw std::runtime_error(ss.str().c_str());
 	}
 	else
 	{
@@ -142,58 +158,27 @@ void Shader::UseProgram()
 	glUseProgram(this->programId);
 }
 
-Object3d::Object3d() :shader("C:\\programacao\\radon_transform_mk2_build\\Debug\\vertexShader.glsl", 
-	"C:\\programacao\\radon_transform_mk2_build\\Debug\\fragmentShader.glsl")
+Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfile)
 {
 	vertexes.push_back(-1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(0.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
-	size_t sz = vertexes.size();
-	std::cout << sz << std::endl;
-
+	vbo = 0;//Cria o buffer e passa os dados pra ele.
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, vertexes.size() * sizeof(float), vertexes.data(), GL_STATIC_DRAW);
+	vao = 0;//Cria o vertex array object e liga o buffer a ele
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertexes.size()*sizeof(float), vertexes.data(), GL_STATIC_DRAW);
-
-	GLint size = 0;
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); 
-	std::cout << "Buffer na gpu = " << size << std::endl;
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
-void teste_opengl()
-{
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR)
-	{
-		std::cout << "erro de opengl em algum lugar";
-		throw err;
-	}
-}
 void Object3d::Render()
 {
-	teste_opengl();
 	shader.UseProgram();
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 	teste_opengl();
-	//glBindVertexArray(vao);
-	teste_opengl();
-	glEnableVertexAttribArray(0);
-	teste_opengl();
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	teste_opengl();
-	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
-	teste_opengl();
-	glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
-	teste_opengl();
-	//glDisableVertexAttribArray(0);
 }
