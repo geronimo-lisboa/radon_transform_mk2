@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <itkImage.h>
 using namespace std;
 class Shader
 {
@@ -34,12 +35,15 @@ public:
 class Object3d
 {
 private:
+	GLuint texture;
 	GLuint vao;
-	GLuint vertexesVbo, colorsVbo;
+	GLuint vertexesVbo, colorsVbo, texVbo;
 	Shader shader;
 	vector<GLfloat> vertexes;
 	vector<GLfloat> colors;
+	vector<GLfloat> texCoords;
+	itk::Image<float, 2>::Pointer image;
 public:
-	Object3d(std::string vsfile, std::string fsfile) ;
+	Object3d(std::string vsfile, std::string fsfile, itk::Image<float, 2>::Pointer imagem);
 	void Render();
 };

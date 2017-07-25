@@ -161,8 +161,18 @@ void Shader::UseProgram()
 	glUseProgram(this->programId);
 }
 
-Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfile)
+Object3d::Object3d(std::string vsfile, std::string fsfile, itk::Image<float, 2>::Pointer imagem) : shader(vsfile, fsfile)
 {
+	this->image = imagem;
+	//Criação da textura
+	texture = 0;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, imagem->GetLargestPossibleRegion().GetSize()[0], 
+		imagem->GetLargestPossibleRegion().GetSize()[1], 0, GL_RED, GL_FLOAT, imagem->GetBufferPointer());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
 	//vertices triangulo 1
 	vertexes.push_back(-1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
@@ -179,6 +189,14 @@ Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfi
 	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
 	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
 	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
+	//TexCoord triangulo 1
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	//Tex coords triangulo 2
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
 
 	vertexesVbo = 0;//Cria o buffer dos vertices e passa os dados pra ele.
 	glGenBuffers(1, &vertexesVbo);
@@ -190,6 +208,11 @@ Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfi
 	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
 	glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(float), colors.data(), GL_STATIC_DRAW);
 
+	texVbo = 0;
+	glGenBuffers(1, &texVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, texVbo);
+	glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(float), texCoords.data(), GL_STATIC_DRAW);
+
 	vao = 0;//Cria o vertex array object e liga o buffer a ele
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -197,14 +220,18 @@ Object3d::Object3d(std::string vsfile, std::string fsfile) : shader(vsfile, fsfi
 	shader.UseProgram();
 	GLuint vpLocation = shader.GetAttribute("vp");
 	GLuint vcLocation = shader.GetAttribute("vc");
+	GLuint uvLocation = shader.GetAttribute("uv");
 	glEnableVertexAttribArray(vpLocation);
 	glEnableVertexAttribArray(vcLocation);
+	glEnableVertexAttribArray(uvLocation);
 	glUseProgram(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexesVbo);
 	glVertexAttribPointer(vpLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
 	glVertexAttribPointer(vcLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
+	glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
 }
 
@@ -214,9 +241,19 @@ void Object3d::Render()
 	glBindVertexArray(vao);
 	GLuint vpLocation = shader.GetAttribute("vp");
 	GLuint vcLocation = shader.GetAttribute("vc");
-	//TODO Depois penso como parametrizar isso aqui
+	GLuint uvLocation = shader.GetAttribute("uv");
+	GLuint textureSamplerLocation = shader.GetUniform("myTextureSampler");
+	GLuint useTextureLocation = shader.GetUniform("useTexture");
+
+	glUniform1i(useTextureLocation, true);//Flag de controle no shader
+
+	glActiveTexture(GL_TEXTURE0);
+	glUniform1i(textureSamplerLocation, 0);
+	glBindTexture(GL_TEXTURE_2D, texture); 		
+
 	glBindAttribLocation(shader.GetProgramId(), vpLocation, "vp");
 	glBindAttribLocation(shader.GetProgramId(), vcLocation, "vc");
+	glBindAttribLocation(shader.GetProgramId(), uvLocation, "uv");
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	teste_opengl();
 }
