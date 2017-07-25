@@ -3,12 +3,15 @@
 2)Carga do Shepp-Logan phantom e sua conversão para 1 canal - Iniciado 21/07/2017, Terminado 21/07/2017
 
 3)Criação da geometria na GPU e carga do phantom na GPU, com exibição na tela. - Iniciado 21/07/2017
-22/07/2017 apareceu na GPU.
+22/07/2017 Apareceu na GPU.
+24/07/2017 Feito
 
 4)Render-To-Texture, para ver como é, com retorno da textura para a CPU.
 
 5)A radon direta como no artigo, com as projeções unidimensionais retornando pra CPU
-
+5.1)Montar a 1a projeção
+5.2)Gerar todas as projeções
+5.3)Sinograma
 
 A partir daqui fica mais nebuloso o que fazer... Tenho que fazer uma fourier transform, aplicá-la nas projeções para realizar um certo filtro e gerar a imagem reconstruída.
 

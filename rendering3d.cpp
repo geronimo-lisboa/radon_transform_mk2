@@ -163,6 +163,7 @@ void Shader::UseProgram()
 
 Object3d::Object3d(std::string vsfile, std::string fsfile, itk::Image<float, 2>::Pointer imagem) : shader(vsfile, fsfile)
 {
+	glDisable(GL_CULL_FACE);
 	this->image = imagem;
 	//Criação da textura
 	texture = 0;
@@ -173,30 +174,23 @@ Object3d::Object3d(std::string vsfile, std::string fsfile, itk::Image<float, 2>:
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	//vertices triangulo 1
+
 	vertexes.push_back(-1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(-1.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
-	//vertices triangulo 2
-	vertexes.push_back(-1.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
-	vertexes.push_back(1.0f); vertexes.push_back(-1.0f); vertexes.push_back(0.0f);
 	vertexes.push_back(1.0f); vertexes.push_back(1.0f); vertexes.push_back(0.0f);
+	
 	//cores triangulo 1
 	colors.push_back(1.0f); colors.push_back(0.0f); colors.push_back(0.0f);
-	colors.push_back(1.0f); colors.push_back(0.0f); colors.push_back(0.0f);
-	colors.push_back(1.0f); colors.push_back(0.0f); colors.push_back(0.0f);
-	//cores triangulo 2
-	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
-	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
-	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
+	colors.push_back(0.0f); colors.push_back(1.0f); colors.push_back(0.0f);
+	colors.push_back(0.0f); colors.push_back(0.0f); colors.push_back(1.0f);
+	colors.push_back(0.0f); colors.push_back(0.1f); colors.push_back(0.0f);
+
 	//TexCoord triangulo 1
-	texCoords.push_back(0.0f); texCoords.push_back(0.0f);//canto inferior esquerdo
-	texCoords.push_back(1.0f); texCoords.push_back(0.0f);//canto inferior direito
-	texCoords.push_back(0.0f); texCoords.push_back(1.0f);//canto superior esquerod
-	//Tex coords triangulo 2
-	texCoords.push_back(0.0f); texCoords.push_back(1.0f);//canto superior esquerdo
-	texCoords.push_back(1.0f); texCoords.push_back(0.0f);//canto inferior direito
-	texCoords.push_back(1.0f); texCoords.push_back(1.0f);//canto superior direito
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f); texCoords.push_back(1.0f);
+	texCoords.push_back(1.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(1.0f); texCoords.push_back(1.0f);
 
 	vertexesVbo = 0;//Cria o buffer dos vertices e passa os dados pra ele.
 	glGenBuffers(1, &vertexesVbo);
@@ -230,7 +224,7 @@ Object3d::Object3d(std::string vsfile, std::string fsfile, itk::Image<float, 2>:
 	glVertexAttribPointer(vpLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
 	glVertexAttribPointer(vcLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, colorsVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, texVbo);
 	glVertexAttribPointer(uvLocation, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
 }
@@ -255,7 +249,7 @@ void Object3d::Render()
 	glBindAttribLocation(shader.GetProgramId(), vpLocation, "vp");
 	glBindAttribLocation(shader.GetProgramId(), vcLocation, "vc");
 	glBindAttribLocation(shader.GetProgramId(), uvLocation, "uv");
-	glDrawArrays(GL_TRIANGLES, 0, vertexes.size()/3);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	teste_opengl();
 }
 
