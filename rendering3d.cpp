@@ -190,13 +190,13 @@ Object3d::Object3d(std::string vsfile, std::string fsfile, itk::Image<float, 2>:
 	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
 	colors.push_back(1.0f); colors.push_back(1.1f); colors.push_back(0.0f);
 	//TexCoord triangulo 1
-	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
-	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
-	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f); texCoords.push_back(0.0f);//canto inferior esquerdo
+	texCoords.push_back(1.0f); texCoords.push_back(0.0f);//canto inferior direito
+	texCoords.push_back(0.0f); texCoords.push_back(1.0f);//canto superior esquerod
 	//Tex coords triangulo 2
-	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
-	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
-	texCoords.push_back(0.0f); texCoords.push_back(0.0f);
+	texCoords.push_back(0.0f); texCoords.push_back(1.0f);//canto superior esquerdo
+	texCoords.push_back(1.0f); texCoords.push_back(0.0f);//canto inferior direito
+	texCoords.push_back(1.0f); texCoords.push_back(1.0f);//canto superior direito
 
 	vertexesVbo = 0;//Cria o buffer dos vertices e passa os dados pra ele.
 	glGenBuffers(1, &vertexesVbo);
@@ -237,6 +237,7 @@ Object3d::Object3d(std::string vsfile, std::string fsfile, itk::Image<float, 2>:
 
 void Object3d::Render()
 {
+
 	shader.UseProgram();
 	glBindVertexArray(vao);
 	GLuint vpLocation = shader.GetAttribute("vp");
@@ -254,7 +255,7 @@ void Object3d::Render()
 	glBindAttribLocation(shader.GetProgramId(), vpLocation, "vp");
 	glBindAttribLocation(shader.GetProgramId(), vcLocation, "vc");
 	glBindAttribLocation(shader.GetProgramId(), uvLocation, "uv");
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, vertexes.size()/3);
 	teste_opengl();
 }
 
