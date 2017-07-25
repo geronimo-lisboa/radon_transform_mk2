@@ -31,6 +31,7 @@ std::string Shader::ReadShaderFile(std::string path)
 	{
 		throw std::exception("arquivo não foi aberto");
 	}
+	std::cout << VertexShaderCode << std::endl;
 	return VertexShaderCode;
 }
 
@@ -51,6 +52,7 @@ void Shader::introspectProgram(GLuint programId, map<string, GLuint>& attributes
 		GLint attribLocation = glGetAttribLocation(programId, nameBuffer);
 		std::string _name(nameBuffer);
 		attributes.insert(std::make_pair(_name, attribLocation));
+		std::cout << _name << std::endl;
 	}
 	//Agora pra uniforms
 	GLint numberOfUniforms, largesUniformName;
@@ -68,6 +70,7 @@ void Shader::introspectProgram(GLuint programId, map<string, GLuint>& attributes
 		GLint unifLoc = glGetUniformLocation(programId, buffer);
 		std::string _name(buffer);
 		uniforms.insert(std::make_pair(_name, unifLoc));
+		std::cout << _name << std::endl;
 	}
 }
 

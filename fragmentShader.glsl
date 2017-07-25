@@ -1,6 +1,6 @@
 #version 400
-in vec3 color;
+in vec3 outColor;
 out vec4 frag_colour;
 void main() {
- frag_colour = vec4(color, 1.0);
+ frag_colour = vec4(outColor, 1.0);
 }
